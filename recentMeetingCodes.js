@@ -138,8 +138,6 @@ const addModalOpenListeners = _ => {
   }
 }
 
-addModalOpenListeners();
-
 const getRecentMeetingCodes = _ => {
   const codes = localStorage.getItem(STORAGE_KEY);
   if (codes) {
@@ -219,4 +217,11 @@ const rerenderButtons = _ => {
   addRecentMeetingCodes();
 }
 
-addRecentMeetingCodes();
+const initRecentMeetingCodesExtension = _ => {
+  if (modalOpener) {
+    addModalOpenListeners();
+    addRecentMeetingCodes();
+  }
+}
+
+initRecentMeetingCodesExtension();
