@@ -5,7 +5,7 @@
   opacity: 1;
   text-align :center;
   transition: box-shadow .03s linear, opacity .25s linear;
-  z-index: 9990;
+  z-index: 4990;
   position: absolute;
   top: 70px;
   left: 50px;
@@ -50,7 +50,7 @@
   flex: 10;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  z-index: 9992;
+  z-index: 4992;
   padding-left: 0;
 }
 
@@ -58,7 +58,7 @@
   flex: 1;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  z-index: 9991;
+  z-index: 4991;
 }
 
 .rmc-button .rmc-button__remove::before {

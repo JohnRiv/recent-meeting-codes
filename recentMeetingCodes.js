@@ -206,7 +206,12 @@ const addRecentMeetingCodes = _ => {
   codes.forEach(code => {
     list.appendChild(createMeetingCodeButton(code));
   });
-  document.body.appendChild(list);
+  const firstDivInBody = document.querySelector("div");
+  if (firstDivInBody) {
+    firstDivInBody.appendChild(list);
+  } else {
+    document.body.appendChild(list);
+  }
 }
 
 const rerenderButtons = _ => {
