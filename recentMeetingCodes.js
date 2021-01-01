@@ -6,6 +6,13 @@ const MEETING_CODE_SUBMIT_TEXT = 'Continue';
 const STORAGE_KEY = 'recentMeetingCodes';
 const MAX_CODES = 15;
 const RMC_CONTAINER_CLASS = 'rmc-list';
+const RMC_ERROR_CLASS = 'rmc-error';
+const RMC_ERROR_SHOW_CLASS = 'rmc-error__show';
+const RMC_ERROR_HEADING_ID = 'rmc-error__heading';
+const RMC_ERROR_MSG_ID = 'rmc-error__msg';
+const RMC_ERROR_TIMEOUT = 15;
+let rmcErrorTimeoutId;
+let errorContainer;
 
 const getMeetingCodeModalOpener = _ => {
   return Array.from(document.querySelectorAll(BUTTON_SELECTOR)).find(node => (node.innerText.includes(OPENER_TEXT) || node.innerText.includes(OPENER_TEXT_RESTRICTED)));
@@ -17,7 +24,9 @@ const launchMeeting = meetingCode => {
   if (modalOpener && modalOpener.click) {
     modalOpener.click();
     setTimeout(submitMeetingCodeForm.bind(this, meetingCode), 250);
-  }
+  } else {
+    displayError(`Cannot open meeting`, "Try typing it yourself");
+  }
 }
 
 const getMeetingCodeFormSubmitButton = _ => {
@@ -162,6 +171,23 @@ const createMeetingCodeButton = code => {
   return div;
 }
 
+const hideError = _ => {
+  errorContainer.classList.remove(RMC_ERROR_SHOW_CLASS);
+}
+
+const displayError = (heading, msg) => {
+  if (rmcErrorTimeoutId) {
+    window.clearTimeout(rmcErrorTimeoutId);
+  }
+  if (!errorContainer) {
+    errorContainer = document.querySelector(`.${RMC_ERROR_CLASS}`);
+  }
+  errorContainer.classList.add(RMC_ERROR_SHOW_CLASS);
+  document.getElementById(RMC_ERROR_HEADING_ID).innerText = heading;
+  document.getElementById(RMC_ERROR_MSG_ID).innerText = msg;
+  rmcErrorTimeoutId = window.setTimeout(hideError, RMC_ERROR_TIMEOUT * 1000);
+}
+
 const addRecentMeetingCodes = _ => {
   const codes = getRecentMeetingCodes();
   const list = document.createElement("div");
@@ -173,6 +199,10 @@ const addRecentMeetingCodes = _ => {
     heading.innerText = "Recently used Meeting Codes:";
   }
   list.appendChild(heading);
+  const errorMsg = document.createElement("div");
+  errorMsg.classList.add(RMC_ERROR_CLASS);
+  errorMsg.innerHTML = `<h3 id="${RMC_ERROR_HEADING_ID}"></h3><p id="${RMC_ERROR_MSG_ID}"></p>`;
+  list.appendChild(errorMsg);
   codes.forEach(code => {
     list.appendChild(createMeetingCodeButton(code));
   });
