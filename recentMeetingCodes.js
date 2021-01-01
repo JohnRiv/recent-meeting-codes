@@ -5,6 +5,7 @@ const MEETING_CODE_SELECTOR = '[data-keyboard-title="Use a meeting code"]';
 const MEETING_CODE_SUBMIT_TEXT = 'Continue';
 const STORAGE_KEY = 'recentMeetingCodes';
 const MAX_CODES = 15;
+const RMC_CONTAINER_CLASS = 'rmc-list';
 
 const getMeetingCodeModalOpener = _ => {
   return Array.from(document.querySelectorAll(BUTTON_SELECTOR)).find(node => (node.innerText.includes(OPENER_TEXT) || node.innerText.includes(OPENER_TEXT_RESTRICTED)));
@@ -65,6 +66,7 @@ const saveMeetingCode = _ => {
   const meetingCodeInput = document.querySelector(MEETING_CODE_SELECTOR);
   if (meetingCodeInput) {
     storagePush(meetingCodeInput.value);
+    rerenderButtons();
   }
 }
 
@@ -163,7 +165,7 @@ const createMeetingCodeButton = code => {
 const addRecentMeetingCodes = _ => {
   const codes = getRecentMeetingCodes();
   const list = document.createElement("div");
-  list.classList.add("rmc-list");
+  list.classList.add(RMC_CONTAINER_CLASS);
   const heading = document.createElement("h2");
   if (codes.length == 0) {
     heading.innerText = "Recently used Meeting Codes will appear here";
@@ -175,6 +177,11 @@ const addRecentMeetingCodes = _ => {
     list.appendChild(createMeetingCodeButton(code));
   });
   document.body.appendChild(list);
+}
+
+const rerenderButtons = _ => {
+  document.querySelector(`.${RMC_CONTAINER_CLASS}`).remove();
+  addRecentMeetingCodes();
 }
 
 addRecentMeetingCodes();
