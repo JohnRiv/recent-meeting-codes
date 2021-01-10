@@ -11,12 +11,30 @@ header.page-header h2 {
 }
 
 header.page-header {
-  padding: 20px;
+  height: 25vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header.page-header h1 {
+  font-size: 7vh;
+}
+
+header.page-header h2 {
+  font-size: 5vh;
+}
+
+section.video video {
+  display: block;
+  margin: 0 auto;
+  height: 70vh;
 }
 
 section.video div.page-header {
   height: 20px;
   padding: 0;
+  height: 5vh;
 }
 
 // https://a11yproject.com/posts/how-to-hide-content/
