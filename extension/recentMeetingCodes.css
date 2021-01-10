@@ -108,4 +108,7 @@
   .rmc-list {
     top: 290px;
   }
+  .rmc-list__lowerForTablet {
+    top: 355px;
+  }
 }

@@ -186,10 +186,25 @@ const displayError = (heading, msg) => {
   rmcErrorTimeoutId = window.setTimeout(hideError, RMC_ERROR_TIMEOUT * 1000);
 }
 
+const isHeightOfCWizLarger = _ => {
+  let val = false;
+  let cWizChild = modalOpener;
+  while (cWizChild && cWizChild.parentElement && cWizChild.parentElement.nodeName != "C-WIZ") {
+    cWizChild = cWizChild.parentElement;
+  }
+  if (cWizChild.offsetHeight > 175) {
+    val = true;
+  }
+  return val;
+}
+
 const addRecentMeetingCodes = _ => {
   const codes = getRecentMeetingCodes();
   const list = document.createElement("div");
   list.classList.add(RMC_CONTAINER_CLASS);
+  if (isHeightOfCWizLarger()) {
+    list.classList.add("rmc-list__lowerForTablet");
+  }
   const heading = document.createElement("h2");
   if (codes.length == 0) {
     heading.innerText = "Recently used Meeting Codes will appear here";
