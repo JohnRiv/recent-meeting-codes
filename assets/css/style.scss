@@ -3,13 +3,20 @@
 
 @import 'jekyll-theme-cayman';
 
-header .page-header h1 {
+header.page-header,
+header.page-header h1,
+header.page-header h2 {
   margin: 0;
+  padding: 0;
+}
+
+header.page-header {
   padding: 20px;
 }
 
-.video .page-header {
+section.video div.page-header {
   height: 20px;
+  padding: 0;
 }
 
 // https://a11yproject.com/posts/how-to-hide-content/
