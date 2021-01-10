@@ -1,11 +1,14 @@
 {
   "name": "Recent Meeting Codes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Adds buttons to launch recently used Meeting Codes to the Google Meet page for Google Classroom",
   "manifest_version": 2,
   "content_scripts": [
     {
-      "matches": ["https://meet.google.com/"],
+      "matches": [
+        "https://meet.google.com/",
+        "https://meet.google.com/?*"
+      ],
       "css": ["recentMeetingCodes.css"],
       "js": ["recentMeetingCodes.js"]
     }
