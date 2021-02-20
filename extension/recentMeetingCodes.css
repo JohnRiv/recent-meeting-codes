@@ -5,10 +5,10 @@
   opacity: 1;
   text-align :center;
   transition: box-shadow .03s linear, opacity .25s linear;
-  z-index: 4990;
+  z-index: 890;
   position: absolute;
   top: 70px;
-  left: 50px;
+  right: 47px;
   padding: 12px 0;
 }
 
@@ -50,7 +50,7 @@
   flex: 10;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  z-index: 4992;
+  z-index: 892;
   padding-left: 0;
 }
 
@@ -58,7 +58,7 @@
   flex: 1;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  z-index: 4991;
+  z-index: 891;
 }
 
 .rmc-button .rmc-button__remove::before {
@@ -76,7 +76,7 @@
 .rmc-error {
   position: absolute;
   width: 33vw;
-  right: calc(-33vw - 6em);
+  right: 300px;
   top: 0;
   background:#fff;
   box-shadow: 0 1px 2px 0 rgba(60,64,67,0.6),0 2px 6px 2px rgba(60,64,67,0.3);
@@ -87,7 +87,7 @@
   text-align: left;
   transform: scale(0.1);
   opacity: 0;
-  transition: opacity 0.25s, transform 0.5s ease-out 0.1s;
+  transition: opacity 0.25s, transform 0.3s ease-out 0.1s;
 }
 
 .rmc-error h3, .rmc-error p {
@@ -106,9 +106,6 @@
 
 @media (max-width: 767px) {
   .rmc-list {
-    top: 290px;
-  }
-  .rmc-list__lowerForTablet {
-    top: 355px;
+    top: 180px;
   }
 }

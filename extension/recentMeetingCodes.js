@@ -1,8 +1,8 @@
-const BUTTON_SELECTOR = 'div[role="button"]';
-const OPENER_TEXT = 'Join or start a meeting';
-const OPENER_TEXT_RESTRICTED = 'Use a meeting code';
-const MEETING_CODE_SELECTOR = '[data-keyboard-title="Use a meeting code"]';
-const MEETING_CODE_SUBMIT_TEXT = 'Continue';
+const BUTTON_SELECTOR = 'button[jsaction]';
+const MEETING_CODE_INPUT_SELECTOR = 'input[placeholder="Enter a code or nickname"]'; // input for meeting code
+// const MEETING_CODE_INPUT_SELECTOR_UNAUTH = 'input[placeholder="Enter meeting code"]';
+// const MEETING_CODE_INPUT_SELECTOR_PERSONAL = 'input[placeholder="Enter a code or link"]';
+const MEETING_CODE_SUBMIT_BTN_TEXT = 'Join'; // button that submits the form
 const STORAGE_KEY = 'recentMeetingCodes';
 const MAX_CODES = 15;
 const RMC_CONTAINER_CLASS = 'rmc-list';
@@ -14,41 +14,23 @@ const RMC_ERROR_TIMEOUT = 15;
 let rmcErrorTimeoutId;
 let errorContainer;
 
-const getMeetingCodeModalOpener = _ => {
-  return Array.from(document.querySelectorAll(BUTTON_SELECTOR)).find(node => (node.innerText.includes(OPENER_TEXT) || node.innerText.includes(OPENER_TEXT_RESTRICTED)));
-}
-
-const modalOpener = getMeetingCodeModalOpener();
-
-const launchMeeting = meetingCode => {
-  if (modalOpener && modalOpener.click) {
-    modalOpener.click();
-    setTimeout(submitMeetingCodeForm.bind(this, meetingCode), 250);
-  } else {
-    displayError(`Cannot open meeting`, "Try typing it yourself");
-  }
-}
+const meetingCodeInput = document.querySelector(MEETING_CODE_INPUT_SELECTOR);
 
 const getMeetingCodeFormSubmitButton = _ => {
-  return Array.from(document.querySelectorAll(BUTTON_SELECTOR)).find(node => node.innerText == MEETING_CODE_SUBMIT_TEXT);
-}
-
-const removeLastClass = elem => {
-  const lastClass = elem.classList.value.split(" ").pop();
-  elem.classList.remove(lastClass);
+  return Array.from(document.querySelectorAll(BUTTON_SELECTOR)).find(node => node.innerText == MEETING_CODE_SUBMIT_BTN_TEXT);
 }
 
 const submitMeetingCodeForm = meetingCode => {
-  const meetingCodeInput = document.querySelector(MEETING_CODE_SELECTOR);
   if (meetingCodeInput) {
     meetingCodeInput.value = meetingCode;
     const submitButton = getMeetingCodeFormSubmitButton();
     if (submitButton && submitButton.click) {
-      removeLastClass(submitButton);
       submitButton.tabIndex = 0;
-      submitButton.removeAttribute("aria-disabled");
+      submitButton.removeAttribute("disabled");
       submitButton.click();
-    }
+    } else {
+      displayError(`Cannot open meeting`, "Try typing it yourself and press Enter or Return");
+    }
   }
 }
 
@@ -72,7 +54,6 @@ const storagePush = value => {
 }
 
 const saveMeetingCode = _ => {
-  const meetingCodeInput = document.querySelector(MEETING_CODE_SELECTOR);
   if (meetingCodeInput) {
     storagePush(meetingCodeInput.value);
     rerenderButtons();
@@ -111,31 +92,17 @@ const handleMeetingCodeButtonClick = e => {
 
 const addMeetingCodeSubmitListeners = _ => {
   // when "Enter" is pressed while text input is focused
-  const meetingCodeInput = document.querySelector(MEETING_CODE_SELECTOR);
   if (meetingCodeInput) {
     meetingCodeInput.addEventListener("keydown", handleMeetingCodeKey);
   }
 
   const submitButton = getMeetingCodeFormSubmitButton();
   if (submitButton) {
-    // when "Enter" or "Space" is pressed while Continue "button" is focused
+    // when "Enter" or "Space" is pressed while MEETING_CODE_SUBMIT_BTN is focused
     submitButton.addEventListener("keydown", handleMeetingCodeButtonKey);
-    // when Continue "button" is clicked
+    // when MEETING_CODE_SUBMIT_BTN is clicked
     submitButton.addEventListener("click", handleMeetingCodeButtonClick);
   }
-}
-
-const handleModalOpened = e => {
-  if (e.type != "keydown" || ((e.type == "keydown") && (e.code == "Space" || e.code == "Enter"))) {
-    setTimeout(addMeetingCodeSubmitListeners, 250);
-  }
-}
-
-const addModalOpenListeners = _ => {
-  if (modalOpener && modalOpener.click) {
-    modalOpener.addEventListener("click", handleModalOpened);
-    modalOpener.addEventListener("keydown", handleModalOpened);
-  }
 }
 
 const getRecentMeetingCodes = _ => {
@@ -154,7 +121,7 @@ const createMeetingCodeButton = code => {
   btn.classList.add("rmc-button__launch")
   btn.innerText = code;
   btn.title = "Launch Meet Code " + code;
-  btn.addEventListener("click", launchMeeting.bind(this, code));
+  btn.addEventListener("click", submitMeetingCodeForm.bind(this, code));
   const remove = document.createElement("button");
   remove.classList.add("rmc-button__remove");
   const removeSpan = document.createElement("span");
@@ -186,25 +153,10 @@ const displayError = (heading, msg) => {
   rmcErrorTimeoutId = window.setTimeout(hideError, RMC_ERROR_TIMEOUT * 1000);
 }
 
-const isHeightOfCWizLarger = _ => {
-  let val = false;
-  let cWizChild = modalOpener;
-  while (cWizChild && cWizChild.parentElement && cWizChild.parentElement.nodeName != "C-WIZ") {
-    cWizChild = cWizChild.parentElement;
-  }
-  if (cWizChild.offsetHeight > 175) {
-    val = true;
-  }
-  return val;
-}
-
 const addRecentMeetingCodes = _ => {
   const codes = getRecentMeetingCodes();
   const list = document.createElement("div");
   list.classList.add(RMC_CONTAINER_CLASS);
-  if (isHeightOfCWizLarger()) {
-    list.classList.add("rmc-list__lowerForTablet");
-  }
   const heading = document.createElement("h2");
   if (codes.length == 0) {
     heading.innerText = "Recently used Meeting Codes will appear here";
@@ -219,9 +171,9 @@ const addRecentMeetingCodes = _ => {
   codes.forEach(code => {
     list.appendChild(createMeetingCodeButton(code));
   });
-  const firstDivInBody = document.querySelector("div");
-  if (firstDivInBody) {
-    firstDivInBody.appendChild(list);
+  const googleHeader = document.querySelector("header");
+  if (googleHeader && googleHeader.parentElement) {
+    googleHeader.parentElement.appendChild(list);
   } else {
     document.body.appendChild(list);
   }
@@ -233,8 +185,8 @@ const rerenderButtons = _ => {
 }
 
 const initRecentMeetingCodesExtension = _ => {
-  if (modalOpener) {
-    addModalOpenListeners();
+  if (meetingCodeInput) {
+    addMeetingCodeSubmitListeners();
     addRecentMeetingCodes();
   }
 }
